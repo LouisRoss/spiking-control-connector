@@ -1,0 +1,10 @@
+#!/bin/bash
+echo $(pwd)
+docker container run \
+-it \
+--rm \
+--name=spiking-model-control-connector \
+-v "$(pwd)":/app \
+-p 5000:5000 \
+louisross/spiking-model-control-connector:1.0 \
+bash

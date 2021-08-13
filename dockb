@@ -1,0 +1,2 @@
+#!/bin/bash
+docker image build -t louisross/spiking-model-control-connector:1.0 .

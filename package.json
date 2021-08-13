@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend API for spiking model engine controller app",
+  "main": "backend.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node -r dotenv/config backend.js",
+    "dev": "nodemon backend.js"
+  },
+  "author": "Louis Ross",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:LouisRoss/spiking-model-control.git"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^0.19.1",
+    "serve-favicon": "^2.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
