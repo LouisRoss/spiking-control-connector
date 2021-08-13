@@ -10,7 +10,7 @@ COPY ["package.json", "package-lock.json", "/app/"]
 RUN ls
 #RUN npm install --production
 RUN npm install
-COPY . .
+#COPY . .
 
 EXPOSE 5000
 
