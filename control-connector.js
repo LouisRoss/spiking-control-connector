@@ -5,8 +5,13 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const path = require('path');
 const net = require('net');
+const fs = require('fs');
 
 const cors = require("cors"); // enforce CORS, will be set to frontend URL when deployed
+
+let rawdata = fs.readFileSync('/configuration/configuration.json');
+let configuration = JSON.parse(rawdata);
+console.log(configuration);
 
 const cors_conf = {
   origin: ["http://0.0.0.0:5000"], // ! temporary
@@ -22,29 +27,6 @@ const app = express();
 app.use(cors());
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-
-/*
-router: (req) => {
-  if (req.path === '/persist') {
-    return 'http://192.168.1.150:5000';
-  } else {
-    return 'http://192.168.1.3:5000';
-  }
-},
-
-const proxyMiddleware = createProxyMiddleware({
-  target: 'http://192.168.1.150:5000',
-  changeOrigin: true,
-  router: {
-    '/persist/**'                : 'http://192.168.1.150:5000'
-  },
-  pathrewrite: {
-    '^/persist' : '',
-  }
-});
-
-app.use(proxyMiddleware);
-*/
 
 const router = express.Router();
 
