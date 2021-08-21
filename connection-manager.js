@@ -87,7 +87,7 @@ class PrivateSingleton {
       return false;
     }
 
-    console.log(`Attemtpting connection with http://${hostName}:8000`);
+    console.log(`Attempting connection with http://${hostName}:8000`);
     var option = {port:8000, host:hostName};
     client = net.createConnection(option, function () {
       status.connected = true;
