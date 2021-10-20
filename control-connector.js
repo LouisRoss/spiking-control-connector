@@ -22,11 +22,6 @@ const requestResponder = require('./request-responder');
 var responder = new requestResponder();
 
 
-var singleton = require('./socket-listener.js');
-const listener = singleton.getInstance();
-listener.Listen(3000, configuration);
-
-
 const app = express();
 //app.use(cors(cors_conf));
 //app.options('/:connection', cors());
@@ -38,7 +33,7 @@ const router = express.Router();
 
 router.get('/:command', (req, res) => {
   const { command } = req.params;
-  console.log(`backend received GET from resource '${command}'`);
+  //console.log(`backend received GET from resource '${command}'`);
 
   if (command == 'status') {
     var response = responder.handleStatusRequest()
