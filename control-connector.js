@@ -89,5 +89,4 @@ app.use('/', router);
 
 app.use(express.static('public'));
 
-server.listen(PORT, () => console.log(`Server running on port http://backend:${PORT}`));
-
+server.listen(PORT, () => console.log(`Server running on port http://control-connector:${PORT}`));

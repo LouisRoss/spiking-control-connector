@@ -87,7 +87,7 @@ class PrivateSingleton {
       return false;
     }
 
-    console.log(`Attempting connection with http://${hostName}:8000`);
+    console.log(`Attempting connection with ${hostName}:8000`);
     var option = {port:8000, host:hostName};
     client = net.createConnection(option, function () {
       status.connected = true;
@@ -153,7 +153,7 @@ class PrivateSingleton {
           }
         }
         status.cpuhistory = cpuhistory;
-        console.log('Capturing Status: ' + JSON.stringify(status));
+        ///console.log('Capturing Status: ' + JSON.stringify(status));
       }
       else if (response.query.query == 'control') {
         if (response.response.status) {
@@ -171,6 +171,15 @@ class PrivateSingleton {
         status.error = null;
         status.errordetail = null;
         console.log('Received configurations response, returning' + JSON.stringify(response.response));
+        if (this.passthroughCallback) {
+          this.passthroughCallback(response.response);
+          this.passthroughCallback = null;
+        }
+      }
+      else if (response.query.query == 'deploy') {
+        status.error = null;
+        status.errordetail = null;
+        console.log('Received deploy response, returning' + JSON.stringify(response.response));
         if (this.passthroughCallback) {
           this.passthroughCallback(response.response);
           this.passthroughCallback = null;

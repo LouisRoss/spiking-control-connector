@@ -2,11 +2,11 @@
   "name": "app",
   "version": "1.0.0",
   "description": "Connector provides REST API to spiking model control socket",
-  "main": "control-connector.js",
+  "main": "spiking-control-connector.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node control-connector.js",
-    "dev": "nodemon control-connector.js"
+    "start": "node spiking-control-connector.js",
+    "dev": "nodemon spiking-control-connector.js"
   },
   "repository": {
     "type": "git",
