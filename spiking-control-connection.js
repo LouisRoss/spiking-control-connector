@@ -5,8 +5,10 @@ let rawdata = fs.readFileSync('/configuration/settings.json');
 const settings = JSON.parse(rawdata);
 
 class ConnectionManager {
-  constructor(engineName) {
+  constructor(engineName, wss) {
     this.engineName = engineName;
+    this.isSelectedEngine = false;
+    this.wsServer = wss;
     this.hostName = engineName;
     settings.engines.forEach(e => { if (e.name === engineName) { this.hostName = e.host; } });
     this.client = null;
@@ -44,6 +46,10 @@ class ConnectionManager {
       console.log('Polling for full status');
       this.client.write(JSON.stringify({ query: "fullstatus" }));
     }
+  }
+
+  setSelectedEngine(selected) {
+    this.isSelectedEngine = selected;
   }
 
   isConnected() {
@@ -181,11 +187,11 @@ class ConnectionManager {
 
   handleModelResponses(data) {
     if (data) {
-      console.log('Handling model response from engine');
+      ///console.log('Handling model response from engine');
       this.connectionStatus.connected = true;
       var fullResponse = JSON.stringify(data).trim();
       if (fullResponse && fullResponse.length > 0) {
-        console.log('Engine return data : ' + fullResponse);
+        ///console.log('Engine return data : ' + fullResponse);
 
         var response = JSON.parse(data);
         this.parseModelResponses(response);
@@ -216,14 +222,20 @@ class ConnectionManager {
       if (response.response.status) {
         this.connectionStatus = { ...this.connectionStatus, ...response.response.status };
         ///console.log('Capturing Status: ' + JSON.stringify(this.connectionStatus));
-      }
+
+        if (this.isSelectedEngine) {
+          this.wsServer.clients.forEach( client => {
+            client.send(JSON.stringify(this.connectionStatus));
+          });
+        };
+      };
     }
 
     ///console.log('Received passthrough response, returning ' + JSON.stringify(response.response));
     if (this.passthroughCallback !== null) {
       this.passthroughCallback(response.response);
       this.passthroughCallback = null;
-      console.log('Returned passthrough callback and nulled the callback');
+      console.log('Engine return data : ' + JSON.stringify(response.response));
     }
   }
 }
