@@ -17,20 +17,13 @@ class ConnectionManager {
     this.cpuhistory = new Array(200).fill(0);
     this.passthroughCallback = null;
 
-    this.periodicStatusPoll = this.periodicStatusPoll.bind(this);
-    setInterval(this.periodicStatusPoll, 1000);
+    this.periodicStatusPoll = this.periodicReconnect.bind(this);
+    setInterval(this.periodicReconnect, 1000);
   }
   
-  periodicStatusPoll() {
+  periodicReconnect() {
     if (this.shouldConnect && !this.isConnected()) {
       this.attemptConnection();
-    } else {
-      if (typeof this.connectionStatus.run === 'undefined' || typeof this.connectionStatus.loglevel === 'undefined' || typeof this.connectionStatus.engineperiod === 'undefined') {
-        //this.fullStatusPoll();    
-      }
-      else {
-        //this.dynamicStatusPoll();    
-      }
     }
   }
 
