@@ -214,7 +214,7 @@ class ConnectionManager {
 
       if (response.response.status) {
         this.connectionStatus = { ...this.connectionStatus, ...response.response.status };
-        ///console.log('Capturing Status: ' + JSON.stringify(this.connectionStatus));
+        ///console.log(`Capturing Status: (selected = ${this.isSelectedEngine})` + JSON.stringify(this.connectionStatus));
 
         if (this.isSelectedEngine) {
           this.wsServer.clients.forEach( client => {
