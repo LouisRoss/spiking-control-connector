@@ -16,6 +16,7 @@ class ConnectionManager {
     this.connectionStatus = { connected: false };
     this.cpuhistory = new Array(200).fill(0);
     this.passthroughCallback = null;
+    this.socketResponse = '';
 
     this.periodicStatusPoll = this.periodicReconnect.bind(this);
     setInterval(this.periodicReconnect, 1000);
@@ -180,15 +181,19 @@ class ConnectionManager {
 
   handleModelResponses(data) {
     if (data) {
-      ///console.log('Handling model response from engine');
+      this.socketResponse += data.toString();
       this.connectionStatus.connected = true;
-      var fullResponse = JSON.stringify(data).trim();
-      if (fullResponse && fullResponse.length > 0) {
-        ///console.log('Engine return data : ' + fullResponse);
 
-        var response = JSON.parse(data);
-        this.parseModelResponses(response);
+      var response = null;
+      try {
+        response = JSON.parse(this.socketResponse);
+      } catch (exception) {
+        console.log('Error parsing engine command-control response: ' + exception.message);
+        return;
       }
+
+      this.socketResponse = '';
+      this.parseModelResponses(response);
     }
   }
 
