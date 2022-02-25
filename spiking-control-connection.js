@@ -17,6 +17,8 @@ class ConnectionManager {
     this.cpuhistory = new Array(200).fill(0);
     this.passthroughCallback = null;
     this.socketResponse = '';
+    this._buffer = null;
+    this._bufferSize = 0;
 
     this.periodicStatusPoll = this.periodicReconnect.bind(this);
     setInterval(this.periodicReconnect, 1000);
@@ -155,10 +157,9 @@ class ConnectionManager {
 
   setupClient() {
     this.client.setTimeout(10000);
-    this.client.setEncoding('utf8');
   
     // When receive server send back data.
-    this.client.on('data', data => this.handleModelResponses(data));
+    this.client.on('data', chunk => this.handleModelResponses(chunk));
 
     // When connection disconnected.
     this.client.on('end', () => {
@@ -179,9 +180,17 @@ class ConnectionManager {
     return true;
   }
 
-  handleModelResponses(data) {
-    if (data) {
-      this.socketResponse += data.toString();
+  handleModelResponses(chunk) {
+    if (this._buffer == null) {
+      this._bufferSize = chunk.readUIntLE(0, 2);
+      this._buffer = Buffer.alloc(chunk.length - 2);
+      chunk.copy(this._buffer, 0, 2);
+      chunk = Buffer.alloc(0);
+    }
+
+    this._buffer = Buffer.concat([this._buffer, chunk]);
+    if (this._buffer.length >= this._bufferSize) {
+      this.socketResponse += this._buffer.toString('utf-8');
       this.connectionStatus.connected = true;
 
       var response = null;
@@ -189,11 +198,13 @@ class ConnectionManager {
         response = JSON.parse(this.socketResponse);
       } catch (exception) {
         console.log('Error parsing engine command-control response: ' + exception.message);
-        return;
       }
 
       this.socketResponse = '';
       this.parseModelResponses(response);
+  
+      this._buffer = null;
+      this._bufferSize = 0;
     }
   }
 
